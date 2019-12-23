@@ -20,15 +20,19 @@ fun main() {
 
     val imageID = ImageID(initialImageID)
     val random = Random()
-
-    for (i in 1..99999) {
-        print("($i) $imageID - ")
+    var imagesCounter = 0
+    do {
+        print("($imagesCounter) $imageID - ")
 
         val imageURL = imageParser.parseImageUrl(imageID.toString())
-        imageDownloader.downloadImage(imageURL, imageID.toString())
-        println("successful")
-
-        imageID.inc()
+        if (!imageDownloader.downloadImage(imageURL, imageID.toString())) {
+            print("Images are over. Wait a while ant press any key to continue")
+            readLine()
+        } else {
+            println("successful")
+            imageID.inc()
+            imagesCounter++
+        }
         Thread.sleep(100 + random.nextInt(400).toLong())
-    }
+    } while (imageID.toString() != "000000")
 }

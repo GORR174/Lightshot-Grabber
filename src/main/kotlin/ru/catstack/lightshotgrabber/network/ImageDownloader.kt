@@ -10,7 +10,9 @@ import java.util.*
 class ImageDownloader(private val folder: File) {
     private val random = Random()
 
-    fun downloadImage(url: String, imageName: String) {
+    fun downloadImage(url: String, imageName: String): Boolean {
+        if (url.startsWith("//"))
+            return false
         val urlConnection = URL(url).openConnection()
         urlConnection.setRequestProperty("User-Agent", userAgents[random.nextInt(
             userAgents.size)])
@@ -21,5 +23,6 @@ class ImageDownloader(private val folder: File) {
                 Files.copy(it, filePath)
             }
         }
+        return true
     }
 }
