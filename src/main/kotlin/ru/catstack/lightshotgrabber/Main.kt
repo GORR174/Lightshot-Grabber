@@ -8,7 +8,7 @@ import java.util.*
 fun main() {
     println("LightShot Grabber $VERSION by CatStack (2019)")
     println("When you upload image to prnt.sc, you will get URL like this: https://prnt.sc/xxxxxx")
-    println("Enter Image ID (xxxxxx) here:")
+    println("Enter Image ID (xxxxxx) or image URl here:")
     val folder = File("imagesOut/")
     if (!folder.exists())
         folder.mkdir()
@@ -16,23 +16,29 @@ fun main() {
     val imageParser = ImageParser()
     val imageDownloader = ImageDownloader(folder)
 
-    val initialImageID = readLine()!!.replace(" ", "")
+    var initialImageID = readLine()!!.replace(" ", "")
+
+    if (initialImageID.lastIndexOf("/") != -1)
+        initialImageID = initialImageID.substring(initialImageID.lastIndexOf("/") + 1)
 
     val imageID = ImageID(initialImageID)
     val random = Random()
     var imagesCounter = 0
-    do {
+    var failedAttempts = 0
+    while (failedAttempts < 3) {
         print("($imagesCounter) $imageID - ")
-
         val imageURL = imageParser.parseImageUrl(imageID.toString())
         if (!imageDownloader.downloadImage(imageURL, imageID.toString())) {
-            print("Images are over. Wait a while ant press any key to continue")
-            readLine()
+            println("error")
+            failedAttempts++
         } else {
             println("successful")
-            imageID.inc()
-            imagesCounter++
+            failedAttempts = 0
         }
+        imageID.inc()
+        imagesCounter++
         Thread.sleep(100 + random.nextInt(400).toLong())
-    } while (imageID.toString() != "000000")
+    }
+    println("It seems the pictures are over. Please try again later.")
+
 }
