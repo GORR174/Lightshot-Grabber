@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'ru.catstack'
-version '1.2'
+version '1.3'
 
 String[] generatedVariables = [ "VERSION:\"$version\"" ]
 
@@ -40,7 +40,7 @@ jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-task addVersion {
+task generateVariables {
     doLast {
         String filePath = 'src/main/kotlin/ru/catstack/lightshotgrabber/Generated.kt'
         def generatedFile = file(filePath)
